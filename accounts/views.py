@@ -62,13 +62,21 @@ def login(request):
 def index(request): #게시글 등록
 	forms = Multi_PhotoForm(request.POST, request.FILES)#다중사진
 	bookingform= BookingPostForm(request.user, request.POST or None)
-	
+	if request.method == 'POST':
+		if request.is_ajax():
+			if bookingform.is_valid():
+				bpost = bookingform.save(commit=False)
+				return redirect('index')
+
 	post_list= request.user.post_set.all()
 	locations= []
-	
+	booking_locations = []
+	bpost_list = request.user.news_bookingposts_from.all()
+
 	for post in post_list:
 		locations.append({'title':post.title, 'content':post.content,'post_id':post.id,'location':post.location})
-
+	for bpost in bpost_list:
+		booking_locations.append({'title':bpost.title, 'content':bpost.content,'post_id':bpost.id,'location':bpost.location})
 	#페이지 네이션을 위한 페이지 변수 ajax로 전달
 	page = request.GET.get('page')
 	try:
@@ -158,6 +166,7 @@ def index(request): #게시글 등록
 		'form':form,
 		'forms':forms,
 		'locations':locations,
+		'booking_locations':booking_locations,
 		'post_list':post_list,
 		'current_page':page_enc,
 		'total_page':range(1, paginator.num_pages + 1),

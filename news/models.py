@@ -85,7 +85,7 @@ class Report_Post(models.Model):
 
 class Bookingpost(models.Model):
 	from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='%(app_label)s_%(class)ss_from')
-	to_user = models.ForeignKey(settings.AUTH_USER_MODEL,blank=True, related_name='%(app_label)s_%(class)ss_to')
+	to_user = models.ForeignKey(settings.AUTH_USER_MODEL,blank=True,null=True, related_name='%(app_label)s_%(class)ss_to')
 	title = models.CharField('제목',max_length=120)
 	content = models.TextField('내용')
 	address = models.TextField('주소')

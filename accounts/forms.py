@@ -293,29 +293,24 @@ class BookingPostForm(forms.ModelForm):
 		widgets={
 		'title': forms.TextInput(attrs={'class':'form-control','placeholder':'제목을 입력하세요.'}),
         'content': forms.Textarea(attrs={'class':'form-control mt-2','placeholder':'내용을 입력하세요.'}),
-        'location': forms.HiddenInput(attrs={'id':'getLatgetLng','value':''}),
-        'address': forms.TextInput(attrs={'class':'form-control', 'placeholder':'주소를 다시 받아오세요.'})
+        'location': forms.HiddenInput(attrs={'id':'booking__hidden','value':''}),
+        'address': forms.TextInput(attrs={'id':'memoryBooking__address','class':'form-control', 'placeholder':'주소를 다시 받아오세요.'})
         }
+
 	def __init__(self, user=False, *args, **kwargs):
 		self.user= user
 		super().__init__(*args, **kwargs)
 
-	def clean_to_user(self):
-		to_user = self.cleaned_data.get('to_user', None)
-		if to_user is not None:
-			try:
-				to_user = User.objects.get(username= to_user)
-			except User.DoesNotExist:
-				raise forms.ValidationError("유저 이름을 확인해주세요")
-		return to_user
-
 	def save(self, commit=True):
+		print('세이브 접속')
 		bpost = super().save(commit=commit)
+		print("세이브 실행")
 		bpost.from_user = self.user
-		to_user = self.cleaned_data.get('to_user')
-		bpost.to_user = to_user
+		print("from유저에 요청유저넣기")
+		to_user = self.cleaned_data.get('to_user', None)
+		print(to_user,'투 유저 정보는 무엇일까요?')
+		if to_user:
+			bpost.to_user = User.objects.get(username= to_user)
 		bpost.save()
-		addr = self.cleaned_data['address']
-		address = Address.objects.create(post=post, address=addr)
-		print("세이브")
+		print("세이브완료")
 		return bpost

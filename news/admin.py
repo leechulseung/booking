@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Address, Photo, Postprivacy, Block_user, Report_Post
+from .models import Post, Comment, Address, Photo, Postprivacy, Block_user, Report_Post, Bookingpost
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -28,4 +28,8 @@ class Block_userAdmin(admin.ModelAdmin):
 
 @admin.register(Report_Post)
 class Report_PostAdmin(admin.ModelAdmin):
+	pass
+	
+@admin.register(Bookingpost)
+class BookingpostAdmin(admin.ModelAdmin):
 	pass

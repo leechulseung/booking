@@ -176,7 +176,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-          <button type="button" class="btn btn-primary">예약하기</button>
+          <button id="booking-sent" type="button" class="btn btn-primary">예약하기</button>
         </div>
       </div>
     </div>
@@ -353,8 +353,11 @@
 <!--스크립트 시작-->
 {% block script %}
   <script>
-      var userLocations = {'locations':{{locations|safe}},
-        'userid':{{user.id}},'url':"{% url 'news:modal' %}",
+      var userLocations = {
+        'booking_locations': {{booking_locations|safe}},
+        'locations':{{locations|safe}},
+        'userid':{{user.id}},
+        'url':"{% url 'news:modal' %}",
         'more_url':"{% url 'news:comment_more' %}"
        };
   </script>

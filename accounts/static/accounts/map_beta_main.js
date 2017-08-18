@@ -201,7 +201,7 @@ function getCookie(name) {
 
         callModal();
         getLatgetLng = latlng.getLat() + ',' + latlng.getLng();
-        // $('#getLatgetLng').attr("value", getLatgetLng);
+        $('#getLatgetLng').attr("value", getLatgetLng);
 
         daum.maps.event.removeListener(map, 'click', handleClick);
         daum.maps.event.removeListener(map, 'mousemove', handleMove);
@@ -353,11 +353,11 @@ function getCookie(name) {
 
     function memoryMarkerClick(e){
         var latlng = e.latLng;
-        var getLatgetLng = null;
+        var booking__hidden = null;
 
         memoryAddModel();
-        getLatgetLng = latlng.getLat() + ',' + latlng.getLng();
-        $('#memoryBooking__address').attr("value", getLatgetLng);
+        booking__hidden = latlng.getLat() + ',' + latlng.getLng();
+        $('#booking__hidden').attr("value", booking__hidden);
 
         daum.maps.event.removeListener(map, 'click', memoryMarkerClick);
         daum.maps.event.removeListener(map, 'mousemove', memoryHandleClick);
