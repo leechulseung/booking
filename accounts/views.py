@@ -15,7 +15,7 @@ from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.templatetags.socialaccount import get_providers
 
 #Form
-from .forms import LoginForm,SignUpForm,CheckForm,SetupForm
+from .forms import LoginForm,SignUpForm,CheckForm,SetupForm, BookingPostForm
 #Post
 from news.models import Post
 
@@ -61,6 +61,8 @@ def login(request):
 @login_required
 def index(request): #게시글 등록
 	forms = Multi_PhotoForm(request.POST, request.FILES)#다중사진
+	bookingform= BookingPostForm(request.user, request.POST or None)
+	
 	post_list= request.user.post_set.all()
 	locations= []
 	
@@ -159,6 +161,7 @@ def index(request): #게시글 등록
 		'post_list':post_list,
 		'current_page':page_enc,
 		'total_page':range(1, paginator.num_pages + 1),
+		'bookingform':bookingform,
 
 		})
 

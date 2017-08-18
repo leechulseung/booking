@@ -1,4 +1,4 @@
-from news.models import Post, Address, Comment, Photo, Postprivacy
+from news.models import Post, Address, Comment, Photo, Postprivacy, Bookingpost
 from django.utils import timezone
 
 from django import forms
@@ -268,10 +268,54 @@ class SetupForm(forms.Form):
 		return self.user
 
 class Multi_PhotoForm(forms.ModelForm):
-    class Meta:
-        model = Photo
-        fields = ['file']
-        widgets = {
+	class Meta:
+		model = Photo
+		fields = ['file']
+		widgets = {
             'file' : forms.ClearableFileInput(attrs={'multiple': True})
         }
 
+class BookingPostForm(forms.ModelForm):
+
+	to_user= forms.EmailField(
+		widget= forms.EmailInput(attrs={
+			'class':'form-control',
+			'placeholder':'계정명을 입력하세요.',
+			}), required=False)
+
+
+
+	class Meta:
+		model = Bookingpost
+		fields = ['title','content','location','address']
+		today = timezone.now()
+		
+		widgets={
+		'title': forms.TextInput(attrs={'class':'form-control','placeholder':'제목을 입력하세요.'}),
+        'content': forms.Textarea(attrs={'class':'form-control mt-2','placeholder':'내용을 입력하세요.'}),
+        'location': forms.HiddenInput(attrs={'id':'getLatgetLng','value':''}),
+        'address': forms.TextInput(attrs={'class':'form-control', 'placeholder':'주소를 다시 받아오세요.'})
+        }
+	def __init__(self, user=False, *args, **kwargs):
+		self.user= user
+		super().__init__(*args, **kwargs)
+
+	def clean_to_user(self):
+		to_user = self.cleaned_data.get('to_user', None)
+		if to_user is not None:
+			try:
+				to_user = User.objects.get(username= to_user)
+			except User.DoesNotExist:
+				raise forms.ValidationError("유저 이름을 확인해주세요")
+		return to_user
+
+	def save(self, commit=True):
+		bpost = super().save(commit=commit)
+		bpost.from_user = self.user
+		to_user = self.cleaned_data.get('to_user')
+		bpost.to_user = to_user
+		bpost.save()
+		addr = self.cleaned_data['address']
+		address = Address.objects.create(post=post, address=addr)
+		print("세이브")
+		return bpost
