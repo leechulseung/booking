@@ -165,8 +165,9 @@ function getCookie(name) {
 (function(daum, jQuery){
 
     var j = 0;
-    var markerMake = $('#markerMake')[0], multiMake = $('#multiMake')[0], registration = $('#registration')[0];
+    var markerMake = $('#markerMake')[0], multiMake = $('#multiMake')[0], registration = $('#registration')[0], memory_booking = $('#memory_booking')[0];
     var content = '<div id="img"></div>';
+    var memory_content = '<div id="memory_img"></div>'
 
     var markerArray = [];
 
@@ -200,7 +201,7 @@ function getCookie(name) {
 
         callModal();
         getLatgetLng = latlng.getLat() + ',' + latlng.getLng();
-        $('#getLatgetLng').attr("value", getLatgetLng);
+        // $('#getLatgetLng').attr("value", getLatgetLng);
 
         daum.maps.event.removeListener(map, 'click', handleClick);
         daum.maps.event.removeListener(map, 'mousemove', handleMove);
@@ -329,6 +330,57 @@ function getCookie(name) {
     	content: function(e) {
             return $('#popover-share-content').html();
         }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+    
+    function memoryAddModel(){
+        $('#memoryBooking').modal('show');
+    }
+
+    function memoryHandleClick(e){
+        var latlng = e.latLng;
+        map.setCursor("default");
+        curOverlay.setContent(memory_content);
+        curOverlay.setPosition(latlng);
+    }
+
+    function memoryCallAddress(result, status){
+        if (status === daum.maps.services.Status.OK) {
+            $('#memoryBooking__address')[0].value = result[0].address.address_name;
+        }
+    }
+
+    function memoryMarkerClick(e){
+        var latlng = e.latLng;
+        var getLatgetLng = null;
+
+        memoryAddModel();
+        getLatgetLng = latlng.getLat() + ',' + latlng.getLng();
+        $('#memoryBooking__address').attr("value", getLatgetLng);
+
+        daum.maps.event.removeListener(map, 'click', memoryMarkerClick);
+        daum.maps.event.removeListener(map, 'mousemove', memoryHandleClick);
+        geocoder.coord2Address(latlng.getLng(), latlng.getLat(), memoryCallAddress);
+
+        map.setCursor(null);
+        curOverlay.setVisible(false);
+    }
+
+    function memoryCancelClick(){
+        daum.maps.event.removeListener(map, 'click', memoryMarkerClick);
+        daum.maps.event.removeListener(map, 'mousemove', memoryHandleClick);
+        daum.maps.event.removeListener(map, 'rightclick', memoryCancelClick);
+        map.setCursor(null);
+        curOverlay.setVisible(false);
+    }
+    
+    $(document).on('click', '#memory_booking', function(){
+        console.log("예약 추가를 클릭했다.");
+        curOverlay.setVisible(true);
+        daum.maps.event.addListener(map, 'click', memoryMarkerClick);
+        daum.maps.event.addListener(map, 'rightclick', memoryCancelClick);
+        daum.maps.event.addListener(map, 'mousemove', memoryHandleClick);
     });
 
 })(window.daum, window.jQuery);

@@ -38,6 +38,15 @@ button:focus {
   margin-bottom: 33px;
 }
 
+#memory_img {
+  background-image: url("/static/img/pin_addinfo_1.png");
+  background-repeat: no-repeat;
+  width: 180px;
+  height: 50px;
+  margin-left: 158px;
+  margin-bottom: 33px;
+}
+
 .btn-group, .btn-group-vertical {
     vertical-align: inherit;
 }
